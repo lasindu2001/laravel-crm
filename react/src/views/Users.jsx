@@ -22,6 +22,16 @@ export default function Users() {
       })
   }
 
+  const onDeleteClick = (user) => {
+    if (!window.confirm("Are you sure you want to delete this user?")) {
+      return
+    }
+    axiosClient.delete(`/users/${user.id}`)
+      .then(() => {
+        getUsers()
+      })
+  }
+
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: "space-between", alignItems: "center" }}>
@@ -39,6 +49,32 @@ export default function Users() {
               <th>Actions</th>
             </tr>
           </thead>
+          {loading &&
+            <tbody>
+              <tr>
+                <td colSpan="5" class="text-center">
+                  Loading...
+                </td>
+              </tr>
+            </tbody>
+          }
+          {!loading &&
+            <tbody>
+              {users.map((u) => (
+                <tr key={u.id}>
+                  <td>{u.id}</td>
+                  <td>{u.name}</td>
+                  <td>{u.email}</td>
+                  <td>{u.created_at}</td>
+                  <td>
+                    <Link className="btn-edit" to={'/users/' + u.id}>Edit</Link>
+                    &nbsp;
+                    <button className="btn-delete" onClick={(e) => onDeleteClick(u)}>Delete</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          }
         </table>
       </div>
     </div>
